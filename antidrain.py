@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 from web3 import Web3
 import time
+import json
+
+# Загружаем конфигурацию
+with open('config.json', 'r', encoding='utf-8') as f:
+    CONFIG = json.load(f)
 
 # Настройки RPC для различных сетей
 NETWORKS = {
@@ -20,7 +25,7 @@ NETWORKS = {
         'native_token_symbol': 'ETH'
     },
     'linea': {
-        'rpc': "d",
+        'rpc': "https://rpc.linea.build",
         'chain_id': 59144,
         'native_token_symbol': 'ETH'
     },
@@ -65,15 +70,15 @@ NETWORKS = {
         'native_token_symbol': 'ETH'
     },
     'opbnb': {
-        'rpc': "",
+        'rpc': "https://binance.llamarpc.com",
         'chain_id': 204,
         'native_token_symbol': 'BNB'
     }
 }
 
 # Настройки
-PRIVATE_KEY = "приватник заскамленого кош "
-DESTINATION_ADDRESS = "адрес куда виводить тугрики"
+PRIVATE_KEY = ""
+DESTINATION_ADDRESS = ""
 
 # Получаем Web3-инстанс для каждой сети
 def get_web3_instance(network):
@@ -98,7 +103,7 @@ def send_native_tokens(web3, network):
     balance_wei = web3.eth.get_balance(address)
     
     # Получение текущей цены газа
-    gas_price = web3.eth.gas_price  # Цена газа в Wei
+    gas_price = web3.eth.gas_price if CONFIG['gas'][network] is None else Web3.to_wei(CONFIG['gas'][network], 'gwei')
     gas_limit = 21000  # Минимальный лимит газа для простой транзакции
 
     # Вычисляем общую стоимость транзакции (gas_fee)
@@ -132,7 +137,7 @@ def drain_wallet():
     account = Web3.to_checksum_address(Web3(Web3.HTTPProvider(NETWORKS['ethereum']['rpc'])).eth.account.from_key(PRIVATE_KEY).address)
     
     while True:
-        for network in NETWORKS:
+        for network in CONFIG['enabled_networks']:
             web3 = get_web3_instance(network)
             if web3 is None:  # Пропускаем, если не удалось подключиться
                 continue
