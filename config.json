@@ -1,3 +1,18 @@
 {
-    "enabled_networks": ["polygon"]
+    "enabled_networks": ["polygon"],
+    "gas": {
+        "ethereum": null,
+        "optimism": null,
+        "arbitrum": null,
+        "linea": null,
+        "polygon": null,
+        "bsc": null,
+        "zetachain": null,
+        "base": null,
+        "avalanche": null,
+        "zora": null,
+        "scroll": null,
+        "zksync": null,
+        "opbnb": null
+    }
 }
